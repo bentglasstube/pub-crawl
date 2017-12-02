@@ -7,7 +7,7 @@
 #include "text.h"
 
 #include "map.h"
-#include "player.h"
+#include "game_state.h"
 
 class MapScreen : public Screen {
   public:
@@ -23,6 +23,6 @@ class MapScreen : public Screen {
   private:
 
     Map map_;
-    Player player_;
+    GameState state_;
     Text text_;
 };

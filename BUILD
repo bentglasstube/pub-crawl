@@ -48,19 +48,10 @@ pkg_tar(
 )
 
 cc_library(
-    name = "screens",
-    srcs = [
-        "map_screen.cc",
-        "title_screen.cc",
-    ],
-    hdrs = [
-        "map_screen.h",
-        "title_screen.h",
-    ],
+    name = "game_state",
+    srcs = [ "game_state.cc" ],
+    hdrs = [ "game_state.h" ],
     deps = [
-        "@libgam//:screen",
-        "@libgam//:text",
-        "map",
         "player",
     ],
 )
@@ -82,5 +73,23 @@ cc_library(
     deps = [
         "@libgam//:graphics",
         "map",
+    ],
+)
+
+cc_library(
+    name = "screens",
+    srcs = [
+        "map_screen.cc",
+        "title_screen.cc",
+    ],
+    hdrs = [
+        "map_screen.h",
+        "title_screen.h",
+    ],
+    deps = [
+        "@libgam//:screen",
+        "@libgam//:text",
+        "map",
+        "game_state",
     ],
 )

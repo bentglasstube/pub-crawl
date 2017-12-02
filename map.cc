@@ -1,29 +1,55 @@
 #include "map.h"
 
-#include <stack>
-
 Map::Map(unsigned int seed) {
   rand_.seed(seed);
   root_.reset(new Block(0, 0, kWidth, kHeight));
   root_->recursive_split(rand_);
 
-  add_buildings(Block::BuildingType::House, 1);
-  add_buildings(Block::BuildingType::Pub, 5);
+  add_buildings(Building::Type::House, 1);
+  add_buildings(Building::Type::Pub, 5);
 }
 
 void Map::draw(Graphics& graphics) const {
   SDL_Rect bg = { 0, 0, kWidth, kHeight};
   graphics.draw_rect(&bg, 0x000000ff, true);
   root_->draw(graphics);
+
+  for (const auto& b : buildings_) {
+    b.draw(graphics);
+  }
 }
 
 std::pair<int, int> Map::start_position() const {
-  return root_->find_house_door();
+  for (const auto& b : buildings_) {
+    if (b.type == Building::Type::House) {
+      const int xl = b.x - 1;
+      const int xm = b.x + b.width / 2;
+      const int xr = b.x + b.width;
+
+      const int yt = b.y - 1;
+      const int ym = b.y + b.height / 2;
+      const int yb = b.y + b.height;
+
+      if (cell_type(xl, ym) == CellType::Street) return std::make_pair(xl, ym);
+      if (cell_type(xr, ym) == CellType::Street) return std::make_pair(xr, ym);
+      if (cell_type(xm, yt) == CellType::Street) return std::make_pair(xm, yt);
+      if (cell_type(xm, yb) == CellType::Street) return std::make_pair(xm, yb);
+
+      return std::make_pair(xm, ym);
+    }
+  }
+
+  return std::make_pair(0, 0);
 }
 
 Map::CellType Map::cell_type(int x, int y) const {
   if (x < 0 || x >= kWidth) return CellType::Block;
   if (y < 0 || y >= kHeight) return CellType::Block;
+
+  for (const auto& b : buildings_) {
+    if (b.contains(x, y)) return CellType::Building;
+  }
+
   return root_->cell_type(x, y);
 }
 
@@ -32,11 +58,38 @@ bool Map::walkable(int x, int y) const {
   return c != CellType::Block;
 }
 
+Map::Building::Building(int x, int y, int w, int h, Type type) :
+  x(x), y(y), width(w), height(h), type(type) {}
+
+void Map::Building::draw(Graphics& graphics) const {
+  SDL_Rect r = { x, y, width, height };
+  graphics.draw_rect(&r, building_color(type), true);
+}
+
+bool Map::Building::contains(int px, int py) const {
+  if (px < x || px >= x + width) return false;
+  if (py < y || py >= y + height) return false;
+  return true;
+}
+
+int Map::Building::building_color(Type type) {
+  switch (type) {
+    case Type::Pub:
+      return 0x794100ff;
+
+    case Type::House:
+      return 0xdb41c3ff;
+
+    default:
+      return 0xaaaaaaff;
+  }
+}
+
+const Map::Building Map::kNullBuilding(0, 0, 0, 0, Map::Building::Type::None);
+
 Map::Block::Block(int x, int y, int w, int h) :
   x_(x), y_(y), width_(w), height_(h),
-  bx_(0), by_(0), bwidth_(0), bheight_(0),
-  btype_(BuildingType::None),
-  left_(nullptr), right_(nullptr) {}
+  building_(false), left_(nullptr), right_(nullptr) {}
 
 void Map::Block::recursive_split(std::default_random_engine& r) {
   if (leaf()) {
@@ -72,93 +125,63 @@ void Map::Block::draw(Graphics& graphics) const {
   if (leaf()) {
     SDL_Rect r = { x_, y_, width_, height_ };
     graphics.draw_rect(&r, 0x386d00ff, true);
-
-    if (has_building()) {
-      SDL_Rect p = { x_ + bx_, y_ + by_, bwidth_, bheight_ };
-      graphics.draw_rect(&p, building_color(btype_), true);
-    }
-
   } else {
     left_->draw(graphics);
     right_->draw(graphics);
   }
 }
 
-bool Map::Block::add_building(BuildingType type, std::default_random_engine& r) {
+Map::Building Map::Block::add_building(Building::Type type, std::default_random_engine& r) {
   std::uniform_int_distribution<int> side(0, 1);
 
   if (leaf()) {
     // This block already has a building
-    if (has_building()) return false;
+    if (has_building()) return kNullBuilding;
 
+    int bx, by, bwidth, bheight;
     if (side(r) == 0) {
       // place building along top or bottom
       std::uniform_int_distribution<int> width(8, 16);
       std::uniform_int_distribution<int> height(4, 8);
 
-      bwidth_ = width(r);
-      bheight_ = height(r);
+      bwidth = width(r);
+      bheight = height(r);
 
-      std::uniform_int_distribution<int> pos(0, width_ - bwidth_);
-      bx_ = pos(r);
+      std::uniform_int_distribution<int> pos(0, width_ - bwidth);
+      bx = pos(r);
 
       if (y_ == 0) {
-        by_ = height_ - bheight_;
+        by = height_ - bheight;
       } else if (y_ + height_ == kHeight) {
-        by_ = 0;
+        by = 0;
       } else {
-        by_ = side(r) == 0 ? 0 : height_ - bheight_;
+        by = side(r) == 0 ? 0 : height_ - bheight;
       }
     } else {
       // place building along left or right
       std::uniform_int_distribution<int> width(4, 8);
       std::uniform_int_distribution<int> height(8, 16);
 
-      bwidth_ = width(r);
-      bheight_ = height(r);
+      bwidth = width(r);
+      bheight = height(r);
 
-      std::uniform_int_distribution<int> pos(0, height_ - bheight_);
-      by_ = pos(r);
+      std::uniform_int_distribution<int> pos(0, height_ - bheight);
+      by = pos(r);
 
       if (x_ == 0) {
-        bx_ = width_ - bwidth_;
+        bx = width_ - bwidth;
       } else if (x_ + width_ == kWidth) {
-        bx_ = 0;
+        bx = 0;
       } else {
-        bx_ = side(r) == 0 ? 0 : width_ - bwidth_;
+        bx = side(r) == 0 ? 0 : width_ - bwidth;
       }
     }
 
-    btype_ = type;
-    return true;
+    building_ = true;
+    return std::move(Building(x_ + bx, y_ + by, bwidth, bheight, type));
   } else {
     // pick a random child to add a building to instead
-    return side(r) == 0 ? left_->add_building(type, r) : right_->add_building(type, r);
-  }
-}
-
-std::pair<int, int> Map::Block::find_house_door() const {
-  if (leaf()) {
-    if (btype_ == BuildingType::House) {
-      const int xm = x_ + bx_ + bwidth_ / 2;
-      const int ym = y_ + by_ + bheight_ / 2;
-
-      if (bx_ == 0) {
-        return std::make_pair(x_ - 1, ym);
-      } else if (by_ == 0) {
-        return std::make_pair(xm, y_ - 1);
-      } else if (bx_ + bwidth_ == width_) {
-        return std::make_pair(x_ + width_, ym);
-      } else {
-        return std::make_pair(xm, y_ + height_);
-      }
-    } else {
-      return std::make_pair(0, 0);
-    }
-  } else {
-    const auto p = left_->find_house_door();
-    if (p.first > 0 || p.second > 0) return p;
-    return right_->find_house_door();
+    return std::move(side(r) == 0 ? left_->add_building(type, r) : right_->add_building(type, r));
   }
 }
 
@@ -167,11 +190,6 @@ Map::CellType Map::Block::cell_type(int x, int y) const {
   if (y < y_ || y >= y_ + height_) return CellType::Street;
 
   if (leaf()) {
-    if (has_building()) {
-      if (x < x_ + bx_ || x >= x_ + bx_ + bwidth_) return CellType::Block;
-      if (y < y_ + by_ || y >= y_ + by_ + bheight_) return CellType::Block;
-      return CellType::Building;
-    }
     return CellType::Block;
   } else {
     // TODO optimize if needed since these are sorted
@@ -185,7 +203,7 @@ bool Map::Block::leaf() const {
 }
 
 bool Map::Block::has_building() const {
-  return btype_ != BuildingType::None;
+  return building_;
 }
 
 void Map::Block::split_horizontal(int pos) {
@@ -198,22 +216,13 @@ void Map::Block::split_vertical(int pos) {
   right_.reset(new Block(x_, y_ + pos + kRoadWidth, width_, height_ - pos - kRoadWidth));
 }
 
-int Map::Block::building_color(BuildingType type) {
-  switch (type) {
-    case BuildingType::Pub:
-      return 0x794100ff;
-
-    case BuildingType::House:
-      return 0xdb41c3ff;
-
-    default:
-      return 0xaaaaaaff;
-  }
-}
-
-void Map::add_buildings(Block::BuildingType type, int count) {
+void Map::add_buildings(Building::Type type, int count) {
   int added = 0;
   while (added < count) {
-    if (root_->add_building(type, rand_)) ++added;
+    const Building b = std::move(root_->add_building(type, rand_));
+    if (b.width > 0) {
+      buildings_.push_back(std::move(b));
+      ++added;
+    }
   }
 }

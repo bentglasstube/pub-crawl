@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <random>
+#include <vector>
 
 #include "graphics.h"
 
@@ -9,6 +10,20 @@ class Map {
   public:
 
     enum class CellType { Street, Block, Building };
+
+    struct Building {
+      enum class Type { None, House, Pub };
+
+      int x, y, width, height;
+      Type type;
+
+      Building(int x, int y, int w, int h, Type type);
+      void draw(Graphics& graphics) const;
+
+      bool contains(int x, int y) const;
+
+      static int building_color(Type type);
+    };
 
     Map(unsigned int seed);
 
@@ -26,26 +41,24 @@ class Map {
     static constexpr int kRoadBuffer = kMinBlockSize / 4;
     static constexpr int kRoadWidth = 4;
 
+    static const Building kNullBuilding;
+
     class Block {
       public:
-
-        enum class BuildingType { None, House, Pub };
 
         Block(int x, int y, int w, int h);
 
         void recursive_split(std::default_random_engine& r);
         void draw(Graphics& graphics) const;
 
-        bool add_building(BuildingType type, std::default_random_engine& r);
-        std::pair<int, int> find_house_door() const;
+        Building add_building(Building::Type type, std::default_random_engine& r);
 
         CellType cell_type(int x, int y) const;
 
       private:
 
         int x_, y_, width_, height_;
-        int bx_, by_, bwidth_, bheight_;
-        BuildingType btype_;
+        bool building_;
         std::unique_ptr<Block> left_, right_;
 
         bool leaf() const;
@@ -53,12 +66,11 @@ class Map {
 
         void split_horizontal(int pos);
         void split_vertical(int pos);
-
-        static int building_color(BuildingType type);
     };
 
-    void add_buildings(Block::BuildingType type, int count);
+    void add_buildings(Building::Type type, int count);
 
     std::default_random_engine rand_;
     std::unique_ptr<Block> root_;
+    std::vector<Building> buildings_;
 };

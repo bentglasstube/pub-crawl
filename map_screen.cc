@@ -16,7 +16,7 @@ bool MapScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
 
   state_.player.update(map_, elapsed);
 
-  return true;
+  return !input.key_pressed(Input::Button::Start);
 }
 
 void MapScreen::draw(Graphics& graphics) const {
@@ -25,7 +25,7 @@ void MapScreen::draw(Graphics& graphics) const {
 }
 
 Screen* MapScreen::next_screen() const {
-  return nullptr;
+  return new MapScreen();
 }
 
 std::string MapScreen::get_music_track() const {

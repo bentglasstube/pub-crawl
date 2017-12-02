@@ -1,0 +1,5 @@
+bazel-*
+build/
+ld40-*.zip
+ld40-*.tgz
+*.app

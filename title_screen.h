@@ -1,6 +1,7 @@
 #pragma once
 
 #include "audio.h"
+#include "backdrop.h"
 #include "graphics.h"
 #include "input.h"
 #include "screen.h"
@@ -19,5 +20,7 @@ class TitleScreen : public Screen {
 
   private:
 
+    Backdrop backdrop_;
     Text text_;
+    int timer_;
 };

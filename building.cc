@@ -1,8 +1,5 @@
 #include "building.h"
 
-const std::vector<std::string> Pub::kAdjectives = { "Hungry", "Thirsty", "Salty", "Smelly", "Angry", "Regal", "Rotten", "Pickled" };
-const std::vector<std::string> Pub::kAnimals = { "Kitty", "Dog", "Beaver", "Goat", "Badger", "Toad", "Dragon", "Ostrich", "Goblin" };
-
 const std::vector<std::string> Beer::kNames = { "Dirt Water", "Ex-Wife", "DFTG", "Gruber", "Choke", "Karate", "Buzz", "Larry", "Yeancy", "Rez", "Arma", "Kababesh" };
 const std::vector<std::string> Beer::kStyles = { "IPA", "Red", "Porter", "Stout", "Pale", "Lager", "Pils", "Brown" };
 
@@ -31,10 +28,6 @@ Beer Beer::generate(std::default_random_engine& r) {
 Building::Building(int x, int y, int w, int h, Type type, const std::string& name) :
   x(x), y(y), width(w), height(h), type(type), name(name), taps(), visited(false) {}
 
-Building::~Building() {
-  taps.clear();
-}
-
 void Building::draw(Graphics& graphics) const {
   SDL_Rect r = { x, y, width, height };
   graphics.draw_rect(&r, building_color(type), true);
@@ -61,13 +54,12 @@ int Building::building_color(Type type) {
   }
 }
 
-House::House(int x, int y, int w, int h) : Building(x, y, w, h, Type::House, "Home") {}
+const std::vector<std::string> Building::kAdjectives = { "Hungry", "Thirsty", "Salty", "Smelly", "Angry", "Regal", "Rotten", "Pickled" };
+const std::vector<std::string> Building::kAnimals = { "Kitty", "Dog", "Beaver", "Goat", "Badger", "Toad", "Dragon", "Ostrich", "Goblin" };
 
-Pub::Pub(int x, int y, int w, int h, std::default_random_engine& r) :
-  Building(x, y, w, h, Type::Pub, Pub::generate_name(r)) {}
-
-std::string Pub::generate_name(std::default_random_engine& r) {
+Building Building::generate_pub(int x, int y, int w, int h, std::default_random_engine& r) {
   std::uniform_int_distribution<int> adj_picker(0, kAdjectives.size() - 1);
   std::uniform_int_distribution<int> animal_picker(0, kAnimals.size() - 1);
-  return "The " + kAdjectives[adj_picker(r)] + " " + kAnimals[animal_picker(r)];
+  const std::string name = "The " + kAdjectives[adj_picker(r)] + " " + kAnimals[animal_picker(r)];
+  return Building(x, y, w, h, Type::Pub, name);
 }

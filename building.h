@@ -30,7 +30,6 @@ class Building {
     bool visited;
 
     Building(int x, int y, int w, int h, Type type, const std::string& name);
-    virtual ~Building();
 
     void draw(Graphics& graphics) const;
     bool near(int x, int y) const;
@@ -38,22 +37,10 @@ class Building {
     void add_tap(Beer& beer);
 
     static int building_color(Type type);
-};
-
-class House : public Building {
-  public:
-
-    House(int x, int y, int w, int h);
-};
-
-class Pub : public Building {
-  public:
-
-    Pub(int x, int y, int w, int h, std::default_random_engine& r);
+    static Building generate_pub(int x, int y, int w, int h, std::default_random_engine& r);
 
   private:
 
-    static std::string generate_name(std::default_random_engine& r);
     static const std::vector<std::string> kAdjectives;
     static const std::vector<std::string> kAnimals;
 };

@@ -163,10 +163,10 @@ Building Map::Block::add_building(Building::Type type, std::default_random_engin
     building_ = true;
     switch (type) {
       case Building::Type::House:
-        return House(x_ + bx, y_ + by, bwidth, bheight);
+        return Building(x_ + bx, y_ + by, bwidth, bheight, type, "Home");
 
       case Building::Type::Pub:
-        return Pub(x_ + bx, y_ + by, bwidth, bheight, r);
+        return Building::generate_pub(x_ + bx, y_ + by, bwidth, bheight, r);
 
       default:
         return kNullBuilding;
@@ -207,7 +207,7 @@ void Map::Block::split_vertical(int pos) {
 void Map::add_buildings(Building::Type type, int count) {
   int added = 0;
   while (added < count) {
-    const Building b = root_->add_building(type, rand_);
+    Building b = root_->add_building(type, rand_);
     if (b.width > 0) {
       buildings_.push_back(b);
       ++added;

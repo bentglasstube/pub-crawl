@@ -17,7 +17,7 @@ class MessageBox {
 
   private:
 
-    static constexpr double kUpdateRate = 0.01;
+    static constexpr double kUpdateRate = 0.02;
 
     SpriteMap sprites_;
     Text text_;

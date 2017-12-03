@@ -51,23 +51,14 @@ void MapScreen::draw(Graphics& graphics) const {
   state_.map.draw(graphics);
   state_.player.draw(graphics);
 
-  const int hour = (kStartTime + state_.time / 1000 / 60) % 24;
-  const int minute = (state_.time / 1000) % 60;
-
-  const std::string time = std::to_string(hour) + ":" + std::to_string(minute);
-  text_.draw(graphics, time, 0, 0);
-
-#ifndef NDEBUG
-  const std::string bac = std::to_string(state_.player.drunkenness());
-  text_.draw(graphics, bac, 256, 0, Text::Alignment::Right);
-#endif
-
   const auto p = state_.player.get_position();
   const Building& b = state_.map.building_near(p.first, p.second);
   if (b.width > 0) {
     const int ty = state_.player.get_position().second > 120 ? 16 : 208;
     text_.draw(graphics, b.name, 128, ty, Text::Alignment::Center);
   }
+
+  state_.draw(graphics);
 
   if (msg_) msg_->draw(graphics);
 }

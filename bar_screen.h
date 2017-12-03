@@ -32,7 +32,7 @@ class BarScreen : public Screen {
     std::unique_ptr<MessageBox> msg_;
     Phase phase_;
     const Beer* beer_;
-    int timer_, tab_;
+    int tab_;
 
     std::string format_beer_info(const Beer* beer);
     void handle_menu_choice();

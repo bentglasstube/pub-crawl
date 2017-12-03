@@ -8,7 +8,7 @@
 BarScreen::BarScreen(GameState state, const Building& pub) :
   state_(state), pub_(pub),
   backdrop_("bar.png"), text_("text.png"), msg_(),
-  phase_(Phase::Greeting), timer_(0)
+  phase_(Phase::Greeting), tab_(0)
 {
   set_phase(Phase::Greeting);
 }
@@ -23,7 +23,9 @@ bool BarScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
         if (input.key_pressed(Input::Button::Down)) msg_->next();
         if (input.key_pressed(Input::Button::Select)) msg_->next();
         if (input.key_pressed(Input::Button::A)) handle_menu_choice();
-        if (input.key_pressed(Input::Button::B)) set_phase(Phase::Greeting);
+        if (input.key_pressed(Input::Button::B)) {
+          set_phase(phase_ == Phase::Greeting ? Phase::Paying : Phase::Greeting);
+        }
       } else {
         if (input.key_pressed(Input::Button::A) || input.key_pressed(Input::Button::B)) {
           if (phase_ == Phase::Paying) return false;
@@ -41,12 +43,12 @@ bool BarScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
 
 void BarScreen::draw(Graphics& graphics) const {
   backdrop_.draw(graphics);
+  state_.draw(graphics);
+  if (msg_) msg_->draw(graphics);
 
   for (int i = 0; i < 3; ++i) {
     text_.draw(graphics, pub_.taps[i]->name, 104, 20 + 14 * i);
   }
-
-  if (msg_) msg_->draw(graphics);
 }
 
 Screen* BarScreen::next_screen() const {
@@ -137,8 +139,16 @@ void BarScreen::set_phase(Phase phase) {
       break;
 
     case Phase::Paying:
+      std::string message = "";
+      if (tab_ > 0) {
+        message = "That'll be $" + std::to_string(tab_) + ".";
+      } else {
+        message = "Come again soon!";
+      }
+      msg_.reset(new MessageBox(30, 5, message));
+
+      state_.player.spend(tab_);
       // TODO handle running out of money
-      msg_.reset(new MessageBox(30, 5, "That will be $" + std::to_string(tab_) + "."));
 
       break;
   }

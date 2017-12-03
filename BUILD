@@ -52,6 +52,8 @@ cc_library(
     srcs = [ "game_state.cc" ],
     hdrs = [ "game_state.h" ],
     deps = [
+        "@libgam//:graphics",
+        "@libgam//:text",
         "map",
         "player",
     ],

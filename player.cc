@@ -78,9 +78,17 @@ double Player::drunkenness() const {
   return drunk_;
 }
 
+int Player::money() const {
+  return money_;
+}
+
 void Player::drink(double abv, double volume) {
   // TODO model absorption rates
   // TODO allow player weight
   // TODO allow player gender
   drunk_ += abv * volume * 5.14 / kPlayerWeight * kMaleRate;
+}
+
+void Player::spend(int amount) {
+  money_ -= amount;
 }

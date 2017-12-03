@@ -21,7 +21,10 @@ class Player {
     void set_position(int x, int y);
 
     double drunkenness() const;
+    int money() const;
+
     void drink(double abv, double volume);
+    void spend(int amount);
 
   private:
 

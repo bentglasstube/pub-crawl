@@ -5,8 +5,18 @@ Map::Map(unsigned int seed) : seed_(seed) {
   root_.reset(new Block(0, 0, kWidth, kHeight));
   root_->recursive_split(rand_);
 
+  add_buildings(Building::Type::Pub, kPubCount);
   add_buildings(Building::Type::House, 1);
-  add_buildings(Building::Type::Pub, 7);
+
+  std::vector<Beer> beers;
+  for (int i = 0; i < 10; ++i) {
+    beers.push_back(Beer::generate(rand_));
+  }
+
+  // TODO better randomization
+  for (int i = 0; i < kPubCount * 3; ++i) {
+    buildings_[i % kPubCount].add_tap(beers[i % 10]);
+  }
 }
 
 Map::Map(const Map& map) : Map(map.seed()) {}

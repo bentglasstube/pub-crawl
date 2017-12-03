@@ -12,7 +12,7 @@
 class BarScreen : public Screen {
   public:
 
-    BarScreen(GameState state);
+    BarScreen(GameState state, const Building& pub);
 
     bool update(const Input& input, Audio& audio, unsigned int elapsed) override;
     void draw(Graphics& graphics) const override;
@@ -23,6 +23,7 @@ class BarScreen : public Screen {
   private:
 
     GameState state_;
+    const Building& pub_;
     Backdrop backdrop_;
     Text text_;
 };

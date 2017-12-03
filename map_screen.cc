@@ -73,7 +73,13 @@ void MapScreen::draw(Graphics& graphics) const {
 }
 
 Screen* MapScreen::next_screen() const {
-  return new BarScreen(state_);
+  const auto p = state_.player.get_position();
+  const Building& b = state_.map.building_near(p.first, p.second);
+  if (b.width > 0) {
+    return new BarScreen(state_, b);
+  }
+
+  return nullptr;
 }
 
 std::string MapScreen::get_music_track() const {

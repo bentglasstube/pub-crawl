@@ -2,7 +2,9 @@
 
 #include "map_screen.h"
 
-BarScreen::BarScreen(GameState state) : state_(state), backdrop_("bar.png"), text_("text.png") {}
+BarScreen::BarScreen(GameState state, const Building& pub) :
+  state_(state), pub_(pub),
+  backdrop_("bar.png"), text_("text.png") {}
 
 bool BarScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
   return !input.key_pressed(Input::Button::Start);
@@ -11,9 +13,9 @@ bool BarScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
 void BarScreen::draw(Graphics& graphics) const {
   backdrop_.draw(graphics);
 
-  text_.draw(graphics, "Dirt Water IPA  $10", 104, 20);
-  text_.draw(graphics, "Diggenbrau      $15", 104, 34);
-  text_.draw(graphics, "Ex-Wife Porter  $ 6", 104, 48);
+  for (int i = 0; i < 3; ++i) {
+    text_.draw(graphics, pub_.taps[i]->name, 104, 20 + 14 * i);
+  }
 }
 
 Screen* BarScreen::next_screen() const {

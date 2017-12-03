@@ -28,6 +28,7 @@ class Map {
     static constexpr int kMinBlockSize = 64;
     static constexpr int kRoadBuffer = kMinBlockSize / 4;
     static constexpr int kRoadWidth = 4;
+    static constexpr int kPubCount = 7;
 
     class Block {
       public:

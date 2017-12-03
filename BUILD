@@ -58,11 +58,21 @@ cc_library(
 )
 
 cc_library(
+    name = "building",
+    srcs = [ "building.cc" ],
+    hdrs = [ "building.h" ],
+    deps = [
+        "@libgam//:graphics",
+    ],
+)
+
+cc_library(
     name = "map",
     srcs = [ "map.cc" ],
     hdrs = [ "map.h" ],
     deps = [
         "@libgam//:graphics",
+        "building",
     ],
 )
 

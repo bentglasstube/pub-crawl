@@ -28,13 +28,19 @@ bool MapScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
 
     if (input.key_pressed(Input::Button::A)) {
       const auto p = state_.player.get_position();
-      const Map::Building& b = state_.map.building_near(p.first, p.second);
+      const Building& b = state_.map.building_near(p.first, p.second);
 
-      if (b.type == Map::Building::Type::Pub) return false;
-      if (b.type == Map::Building::Type::House) {
+      if (b.type == Building::Type::Pub) return false;
+      if (b.type == Building::Type::House) {
         // TODO check win condition
         msg_.reset(new MessageBox(30, 1, "You aren't ready for bed yet."));
       }
+    }
+
+    if (input.key_pressed(Input::Button::Select)) {
+      state_.player.stop();
+      state_.update(15000);
+      state_.player.drink(0.10, 16);
     }
   }
 
@@ -57,18 +63,17 @@ void MapScreen::draw(Graphics& graphics) const {
 #endif
 
   const auto p = state_.player.get_position();
-  const Map::Building& b = state_.map.building_near(p.first, p.second);
+  const Building& b = state_.map.building_near(p.first, p.second);
   if (b.width > 0) {
-    // TODO show name instead of generic text
     const int ty = state_.player.get_position().second > 120 ? 16 : 208;
-    text_.draw(graphics, b.name(), 128, ty, Text::Alignment::Center);
+    text_.draw(graphics, b.name, 128, ty, Text::Alignment::Center);
   }
 
   if (msg_) msg_->draw(graphics);
 }
 
 Screen* MapScreen::next_screen() const {
-  return new BarScreen(std::move(state_));
+  return new BarScreen(state_);
 }
 
 std::string MapScreen::get_music_track() const {

@@ -6,22 +6,10 @@
 
 #include "graphics.h"
 
+#include "building.h"
+
 class Map {
   public:
-
-    struct Building {
-      enum class Type { None, House, Pub };
-
-      int x, y, width, height;
-      Type type;
-
-      Building(int x, int y, int w, int h, Type type);
-      void draw(Graphics& graphics) const;
-      bool near(int x, int y) const;
-      std::string name() const;
-
-      static int building_color(Type type);
-    };
 
     Map(unsigned int seed);
     Map(const Map& map);
@@ -40,8 +28,6 @@ class Map {
     static constexpr int kMinBlockSize = 64;
     static constexpr int kRoadBuffer = kMinBlockSize / 4;
     static constexpr int kRoadWidth = 4;
-
-    static const Building kNullBuilding;
 
     class Block {
       public:

@@ -44,7 +44,7 @@ std::pair<int, int> Map::start_position() const {
   return std::make_pair(0, 0);
 }
 
-const Map::Building& Map::building_near(int x, int y) const {
+const Building& Map::building_near(int x, int y) const {
   for (const auto& b : buildings_) {
     if (b.near(x, y)) return b;
   }
@@ -60,44 +60,6 @@ bool Map::walkable(int x, int y) const {
 unsigned int Map::seed() const {
   return seed_;
 }
-
-Map::Building::Building(int x, int y, int w, int h, Type type) :
-  x(x), y(y), width(w), height(h), type(type) {}
-
-void Map::Building::draw(Graphics& graphics) const {
-  SDL_Rect r = { x, y, width, height };
-  graphics.draw_rect(&r, building_color(type), true);
-}
-
-bool Map::Building::near(int px, int py) const {
-  if (px < x - 1 || px > x + width) return false;
-  if (py < y - 1 || py > y + height) return false;
-  return true;
-}
-
-std::string Map::Building::name() const {
-  switch (type) {
-    case Type::Pub:
-      return "Pub";
-    case Type::House:
-      return "Home";
-    default:
-      return "";
-  }
-}
-
-int Map::Building::building_color(Type type) {
-  switch (type) {
-    case Type::Pub:
-      return 0xebd320ff;
-    case Type::House:
-      return 0xdb41c3ff;
-    default:
-      return 0xaaaaaaff;
-  }
-}
-
-const Map::Building Map::kNullBuilding(0, 0, 0, 0, Map::Building::Type::None);
 
 Map::Block::Block(int x, int y, int w, int h) :
   x_(x), y_(y), width_(w), height_(h),
@@ -143,7 +105,7 @@ void Map::Block::draw(Graphics& graphics) const {
   }
 }
 
-Map::Building Map::Block::add_building(Building::Type type, std::default_random_engine& r) {
+Building Map::Block::add_building(Building::Type type, std::default_random_engine& r) {
   std::uniform_int_distribution<int> side(0, 1);
 
   if (leaf()) {
@@ -190,10 +152,20 @@ Map::Building Map::Block::add_building(Building::Type type, std::default_random_
     }
 
     building_ = true;
-    return std::move(Building(x_ + bx, y_ + by, bwidth, bheight, type));
+    switch (type) {
+      case Building::Type::House:
+        return House(x_ + bx, y_ + by, bwidth, bheight);
+
+      case Building::Type::Pub:
+        return Pub(x_ + bx, y_ + by, bwidth, bheight, r);
+
+      default:
+        return kNullBuilding;
+    }
+
   } else {
     // pick a random child to add a building to instead
-    return std::move(side(r) == 0 ? left_->add_building(type, r) : right_->add_building(type, r));
+    return side(r) == 0 ? left_->add_building(type, r) : right_->add_building(type, r);
   }
 }
 
@@ -226,9 +198,9 @@ void Map::Block::split_vertical(int pos) {
 void Map::add_buildings(Building::Type type, int count) {
   int added = 0;
   while (added < count) {
-    const Building b = std::move(root_->add_building(type, rand_));
+    const Building b = root_->add_building(type, rand_);
     if (b.width > 0) {
-      buildings_.push_back(std::move(b));
+      buildings_.push_back(b);
       ++added;
     }
   }

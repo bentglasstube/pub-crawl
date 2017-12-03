@@ -2,10 +2,11 @@
 
 MessageBox::MessageBox(int cols, int rows, const std::string& message) :
   sprites_("ui.png", 3, 8, 8), text_("text.png"),
-  cols_(cols), rows_(rows), message_(message), progress_(0.0) {}
+  cols_(cols), rows_(rows), choice_(0), progress_(0.0),
+  message_(message), choices_() {}
 
 void MessageBox::update(unsigned int elapsed) {
-  progress_ += kUpdateRate * elapsed;
+  if (!done()) progress_ += kUpdateRate * elapsed;
 }
 
 void MessageBox::draw(Graphics& graphics) const {
@@ -30,12 +31,41 @@ void MessageBox::draw(Graphics& graphics) const {
   }
 
   text_.draw(graphics, message_.substr(0, (int) progress_), x + 8, y + 8);
+
+  if (done()) {
+    size_t count = choices_.size();
+    for (size_t i = 0; i < count; ++i) {
+      const int yy = y + 16 * (rows_ - count + i) + 8;
+      if (i == choice_) text_.draw(graphics, ">", x + 8, yy);
+      text_.draw(graphics, choices_[i], x + 24, yy);
+    }
+  }
+}
+
+void MessageBox::add_option(const std::string& choice) {
+  choices_.push_back(choice);
 }
 
 void MessageBox::skip() {
   progress_ = message_.length();
 }
 
+void MessageBox::previous() {
+  if (choice_ > 0) --choice_;
+}
+
+void MessageBox::next() {
+  if (choice_ < choices_.size() - 1) ++choice_;
+}
+
+size_t MessageBox::choice() const {
+  return choice_;
+}
+
 bool MessageBox::done() const {
   return progress_ >= message_.length();
+}
+
+bool MessageBox::menu() const {
+  return !choices_.empty();
 }

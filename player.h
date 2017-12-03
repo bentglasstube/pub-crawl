@@ -19,9 +19,19 @@ class Player {
 
     void set_position(int x, int y);
 
+    double drunkenness() const;
+    void drink(double abv, double volume);
+
   private:
 
-    static constexpr double kWalkSpeed = 0.02;
+    static constexpr double kWalkSpeed = 0.01;
+    static constexpr double kDrunkDecay = 0.007 / 60000;
+    static constexpr double kPlayerWeight = 180;
+    static constexpr double kMaleRate = 0.73;
+    static constexpr double kFemaleRate = 0.66;
 
     double x_, y_, vx_, vy_;
+    double drunk_;
+    int money_;
+    std::default_random_engine rng_;
 };

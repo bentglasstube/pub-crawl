@@ -6,7 +6,7 @@ Map::Map(unsigned int seed) : seed_(seed) {
   root_->recursive_split(rand_);
 
   add_buildings(Building::Type::House, 1);
-  add_buildings(Building::Type::Pub, 5);
+  add_buildings(Building::Type::Pub, 7);
 }
 
 Map::Map(const Map& map) : Map(map.seed()) {}
@@ -81,7 +81,7 @@ bool Map::Building::contains(int px, int py) const {
 int Map::Building::building_color(Type type) {
   switch (type) {
     case Type::Pub:
-      return 0x794100ff;
+      return 0xebd320ff;
 
     case Type::House:
       return 0xdb41c3ff;

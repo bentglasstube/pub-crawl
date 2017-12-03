@@ -72,6 +72,7 @@ cc_library(
     hdrs = [ "player.h" ],
     deps = [
         "@libgam//:graphics",
+        "@libgam//:util",
         "map",
     ],
 )

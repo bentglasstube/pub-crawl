@@ -22,6 +22,8 @@ class MapScreen : public Screen {
 
   private:
 
+    static constexpr int kStartTime = 20;
+
     GameState state_;
     Text text_;
 };

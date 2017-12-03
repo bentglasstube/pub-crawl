@@ -1,5 +1,8 @@
 #include "title_screen.h"
 
+#include "util.h"
+
+#include "game_state.h"
 #include "map_screen.h"
 
 TitleScreen::TitleScreen() : text_("text.png") {}
@@ -13,7 +16,8 @@ void TitleScreen::draw(Graphics& graphics) const {
 }
 
 Screen* TitleScreen::next_screen() const {
-  return new MapScreen();
+  GameState state(Util::random_seed());
+  return new MapScreen(state);
 }
 
 std::string TitleScreen::get_music_track() const {

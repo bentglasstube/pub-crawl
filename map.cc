@@ -1,6 +1,6 @@
 #include "map.h"
 
-Map::Map(unsigned int seed) {
+Map::Map(unsigned int seed) : seed_(seed) {
   rand_.seed(seed);
   root_.reset(new Block(0, 0, kWidth, kHeight));
   root_->recursive_split(rand_);
@@ -8,6 +8,8 @@ Map::Map(unsigned int seed) {
   add_buildings(Building::Type::House, 1);
   add_buildings(Building::Type::Pub, 5);
 }
+
+Map::Map(const Map& map) : Map(map.seed()) {}
 
 void Map::draw(Graphics& graphics) const {
   SDL_Rect bg = { 0, 0, kWidth, kHeight};
@@ -56,6 +58,10 @@ Map::CellType Map::cell_type(int x, int y) const {
 bool Map::walkable(int x, int y) const {
   const auto c = cell_type(x, y);
   return c != CellType::Block;
+}
+
+unsigned int Map::seed() const {
+  return seed_;
 }
 
 Map::Building::Building(int x, int y, int w, int h, Type type) :

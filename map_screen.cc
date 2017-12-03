@@ -1,11 +1,8 @@
 #include "map_screen.h"
 
-#include "util.h"
+#include "bar_screen.h"
 
-MapScreen::MapScreen() : map_(Util::random_seed()), state_(), text_("text.png") {
-  auto start = map_.start_position();
-  state_.player.set_position(start.first, start.second);
-}
+MapScreen::MapScreen(GameState state) : state_(state), text_("text.png") {}
 
 bool MapScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
   if (input.key_pressed(Input::Button::Left)) state_.player.move(Player::Direction::West);
@@ -14,18 +11,18 @@ bool MapScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
   if (input.key_pressed(Input::Button::Down)) state_.player.move(Player::Direction::South);
   if (input.key_pressed(Input::Button::B)) state_.player.stop();
 
-  state_.player.update(map_, elapsed);
+  state_.player.update(state_.map, elapsed);
 
   return !input.key_pressed(Input::Button::Start);
 }
 
 void MapScreen::draw(Graphics& graphics) const {
-  map_.draw(graphics);
+  state_.map.draw(graphics);
   state_.player.draw(graphics);
 }
 
 Screen* MapScreen::next_screen() const {
-  return new MapScreen();
+  return new BarScreen(std::move(state_));
 }
 
 std::string MapScreen::get_music_track() const {

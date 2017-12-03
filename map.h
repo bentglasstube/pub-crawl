@@ -26,12 +26,14 @@ class Map {
     };
 
     Map(unsigned int seed);
+    Map(const Map& map);
 
     void draw(Graphics& graphics) const;
 
     std::pair<int, int> start_position() const;
     CellType cell_type(int x, int y) const;
     bool walkable(int x, int y) const;
+    unsigned int seed() const;
 
   private:
 
@@ -70,6 +72,7 @@ class Map {
 
     void add_buildings(Building::Type type, int count);
 
+    const unsigned int seed_;
     std::default_random_engine rand_;
     std::unique_ptr<Block> root_;
     std::vector<Building> buildings_;

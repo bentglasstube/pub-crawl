@@ -1,18 +1,18 @@
 #pragma once
 
 #include "audio.h"
+#include "backdrop.h"
 #include "graphics.h"
 #include "input.h"
 #include "screen.h"
 #include "text.h"
 
-#include "map.h"
 #include "game_state.h"
 
-class MapScreen : public Screen {
+class BarScreen : public Screen {
   public:
 
-    MapScreen(GameState state);
+    BarScreen(GameState state);
 
     bool update(const Input& input, Audio& audio, unsigned int elapsed) override;
     void draw(Graphics& graphics) const override;
@@ -23,5 +23,6 @@ class MapScreen : public Screen {
   private:
 
     GameState state_;
+    Backdrop backdrop_;
     Text text_;
 };

@@ -52,6 +52,7 @@ cc_library(
     srcs = [ "game_state.cc" ],
     hdrs = [ "game_state.h" ],
     deps = [
+        "map",
         "player",
     ],
 )
@@ -62,7 +63,6 @@ cc_library(
     hdrs = [ "map.h" ],
     deps = [
         "@libgam//:graphics",
-        "@libgam//:util",
     ],
 )
 
@@ -79,16 +79,20 @@ cc_library(
 cc_library(
     name = "screens",
     srcs = [
+        "bar_screen.cc",
         "map_screen.cc",
         "title_screen.cc",
     ],
     hdrs = [
+        "bar_screen.h",
         "map_screen.h",
         "title_screen.h",
     ],
     deps = [
+        "@libgam//:backdrop",
         "@libgam//:screen",
         "@libgam//:text",
+        "@libgam//:util",
         "map",
         "game_state",
     ],

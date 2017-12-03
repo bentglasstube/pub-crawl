@@ -21,6 +21,9 @@ class Map {
     bool walkable(int x, int y) const;
     unsigned int seed() const;
 
+    int pubs_visited() const;
+    int beers_drank() const;
+
   private:
 
     static constexpr int kWidth = 256;

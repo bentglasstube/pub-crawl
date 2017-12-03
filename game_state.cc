@@ -31,3 +31,7 @@ void GameState::draw(Graphics& graphics) const {
 bool GameState::bars_closed() const {
   return time >= kClosingTime;
 }
+
+bool GameState::past_bedtime() const {
+  return time >= kBedTime;
+}

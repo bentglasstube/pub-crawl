@@ -1,5 +1,7 @@
 #include "map.h"
 
+#include <algorithm>
+
 Map::Map(unsigned int seed) : seed_(seed), rand_(), root_(), buildings_(), beers_() {
   rand_.seed(seed_);
   root_.reset(new Block(0, 0, kWidth, kHeight));
@@ -68,6 +70,20 @@ bool Map::walkable(int x, int y) const {
 
 unsigned int Map::seed() const {
   return seed_;
+}
+
+int Map::pubs_visited() const {
+  return std::count_if(
+      buildings_.begin(),
+      buildings_.end(),
+      [](const Building& b){ return b.type == Building::Type::Pub && b.visited; });
+}
+
+int Map::beers_drank() const {
+  return std::count_if(
+      beers_.begin(),
+      beers_.end(),
+      [](const Beer& b){ return b.tried; });
 }
 
 Map::Block::Block(int x, int y, int w, int h) :

@@ -1,6 +1,7 @@
 #include "map_screen.h"
 
 #include "bar_screen.h"
+#include "home_screen.h"
 
 MapScreen::MapScreen(GameState state) : state_(state), text_("text.png"), msg_() {}
 
@@ -30,10 +31,19 @@ bool MapScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
       const auto p = state_.player.get_position();
       const Building& b = state_.map.building_near(p.first, p.second);
 
-      if (b.type == Building::Type::Pub) return false;
+      if (b.type == Building::Type::Pub) {
+        if (state_.bars_closed()) {
+          msg_.reset(new MessageBox(30, 1, "Looks like they're closed."));
+        } else {
+          return false;
+        }
+      }
       if (b.type == Building::Type::House) {
-        // TODO check win condition
-        msg_.reset(new MessageBox(30, 1, "You aren't ready for bed yet."));
+        if (state_.past_bedtime()) {
+          return false;
+        } else {
+          msg_.reset(new MessageBox(30, 1, "You aren't ready for bed yet."));
+        }
       }
     }
 
@@ -70,7 +80,7 @@ Screen* MapScreen::next_screen() const {
     return new BarScreen(state_, b);
   }
 
-  return nullptr;
+  return new HomeScreen(state_);
 }
 
 std::string MapScreen::get_music_track() const {

@@ -18,11 +18,13 @@ class GameState {
     void draw(Graphics& graphics) const;
 
     bool bars_closed() const;
+    bool past_bedtime() const;
 
   private:
 
     static constexpr int kStartTime = 20;
     static constexpr int kClosingTime = (26 - kStartTime) * 60000;
+    static constexpr int kBedTime = (24 - kStartTime) * 60000;
 
     Text text_;
 };

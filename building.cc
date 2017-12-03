@@ -1,19 +1,39 @@
 #include "building.h"
 
-Beer Beer::generate(std::default_random_engine r) {
+const std::vector<std::string> Pub::kAdjectives = { "Hungry", "Thirsty", "Salty", "Smelly", "Angry", "Regal", "Rotten", "Pickled" };
+const std::vector<std::string> Pub::kAnimals = { "Kitty", "Dog", "Beaver", "Goat", "Badger", "Toad", "Dragon", "Ostrich", "Goblin" };
+
+const std::vector<std::string> Beer::kNames = { "Dirt Water", "Ex-Wife", "DFTG", "Gruber", "Choke", "Karate", "Buzz", "Larry", "Yeancy", "Rez", "Arma", "Kababesh" };
+const std::vector<std::string> Beer::kStyles = { "IPA", "Red", "Porter", "Stout", "Pale", "Lager", "Pils", "Brown" };
+
+Beer Beer::generate(std::default_random_engine& r) {
   Beer beer;
 
-  // TODO randomize
-  beer.name = "Dirt Water IPA";
-  beer.abv = 0.065;
-  beer.pour_size = 12;
-  beer.price = 8;
+  std::uniform_int_distribution<int> name_picker(0, kNames.size() - 1);
+  std::uniform_int_distribution<int> style_picker(0, kStyles.size() - 1);
+
+  beer.name = kNames[name_picker(r)] + " " + kStyles[style_picker(r)];
+
+  // TODO base mean ABV on style
+  std::normal_distribution<double> abv_picker(0.06, 0.02);
+  beer.abv = abv_picker(r);
+  if (beer.abv < 0.035) beer.abv = 0.035;
+
+  // beer pour is based on strength
+  beer.pour_size = beer.abv > 0.10 ? 10 : 16;
+
+  std::uniform_int_distribution<int> price_picker(5, 12);
+  beer.price = price_picker(r);
 
   return beer;
 }
 
 Building::Building(int x, int y, int w, int h, Type type, const std::string& name) :
-  x(x), y(y), width(w), height(h), type(type), name(name), visited(false) {}
+  x(x), y(y), width(w), height(h), type(type), name(name), taps(), visited(false) {}
+
+Building::~Building() {
+  taps.clear();
+}
 
 void Building::draw(Graphics& graphics) const {
   SDL_Rect r = { x, y, width, height };
@@ -51,6 +71,3 @@ std::string Pub::generate_name(std::default_random_engine& r) {
   std::uniform_int_distribution<int> animal_picker(0, kAnimals.size() - 1);
   return "The " + kAdjectives[adj_picker(r)] + " " + kAnimals[animal_picker(r)];
 }
-
-const std::vector<std::string> Pub::kAdjectives = { "Hungry", "Thirsty", "Salty", "Smelly", "Angry", "Regal", "Rotten", "Pickled" };
-const std::vector<std::string> Pub::kAnimals = { "Kitty", "Dog", "Beaver", "Goat", "Badger", "Toad", "Dragon", "Ostrich", "Goblin" };

@@ -29,6 +29,7 @@ class Map {
     static constexpr int kRoadBuffer = kMinBlockSize / 4;
     static constexpr int kRoadWidth = 4;
     static constexpr int kPubCount = 7;
+    static constexpr int kBeerCount = 10;
 
     class Block {
       public:
@@ -61,4 +62,5 @@ class Map {
     std::default_random_engine rand_;
     std::unique_ptr<Block> root_;
     std::vector<Building> buildings_;
+    std::vector<Beer> beers_;
 };

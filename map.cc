@@ -1,21 +1,20 @@
 #include "map.h"
 
-Map::Map(unsigned int seed) : seed_(seed) {
-  rand_.seed(seed);
+Map::Map(unsigned int seed) : seed_(seed), rand_(), root_(), buildings_(), beers_() {
+  rand_.seed(seed_);
   root_.reset(new Block(0, 0, kWidth, kHeight));
   root_->recursive_split(rand_);
 
   add_buildings(Building::Type::Pub, kPubCount);
   add_buildings(Building::Type::House, 1);
 
-  std::vector<Beer> beers;
-  for (int i = 0; i < 10; ++i) {
-    beers.push_back(Beer::generate(rand_));
+  for (int i = 0; i < kBeerCount; ++i) {
+    beers_.push_back(Beer::generate(rand_));
   }
 
   // TODO better randomization
   for (int i = 0; i < kPubCount * 3; ++i) {
-    buildings_[i % kPubCount].add_tap(beers[i % 10]);
+    buildings_[i % kPubCount].add_tap(beers_[i % kBeerCount]);
   }
 }
 

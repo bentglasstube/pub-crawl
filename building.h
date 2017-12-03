@@ -12,7 +12,10 @@ struct Beer {
   int pour_size, price;
   bool tried;
 
-  static Beer generate(std::default_random_engine r);
+  static Beer generate(std::default_random_engine& r);
+
+  static const std::vector<std::string> kNames;
+  static const std::vector<std::string> kStyles;
 };
 
 class Building {
@@ -27,13 +30,14 @@ class Building {
     bool visited;
 
     Building(int x, int y, int w, int h, Type type, const std::string& name);
+    virtual ~Building();
+
     void draw(Graphics& graphics) const;
     bool near(int x, int y) const;
 
     void add_tap(Beer& beer);
 
     static int building_color(Type type);
-
 };
 
 class House : public Building {

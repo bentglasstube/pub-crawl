@@ -21,6 +21,7 @@ Beer Beer::generate(std::default_random_engine& r) {
 
   std::uniform_int_distribution<int> price_picker(5, 12);
   beer.price = price_picker(r);
+  beer.tried = false;
 
   return beer;
 }

@@ -77,10 +77,14 @@ Screen* MapScreen::next_screen() const {
   const auto p = state_.player.get_position();
   const Building& b = state_.map.building_near(p.first, p.second);
   if (b.width > 0) {
-    return new BarScreen(state_, b);
+    if (b.type == Building::Type::Pub) {
+      return new BarScreen(state_, b);
+    } else {
+      return new HomeScreen(state_);
+    }
   }
 
-  return new HomeScreen(state_);
+  return nullptr;
 }
 
 std::string MapScreen::get_music_track() const {

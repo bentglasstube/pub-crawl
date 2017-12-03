@@ -12,15 +12,15 @@ bool MapScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
   else if (input.key_held(Input::Button::Down)) state_.player.move(Player::Direction::South);
   else state_.player.stop();
 
-  if (input.key_pressed(Input::Button::A)) {
-    state_.player.stop();
-    state_.update(15000);
-    state_.player.drink(0.10, 16);
-  }
-
   state_.update(elapsed);
 
-  return !input.key_pressed(Input::Button::Start);
+  if (input.key_pressed(Input::Button::A)) {
+    const auto p = state_.player.get_position();
+    const Map::Building& b = state_.map.building_near(p.first, p.second);
+    if (b.width > 0) return false;
+  }
+
+  return true;
 }
 
 void MapScreen::draw(Graphics& graphics) const {
@@ -31,10 +31,20 @@ void MapScreen::draw(Graphics& graphics) const {
   const int minute = (state_.time / 1000) % 60;
 
   const std::string time = std::to_string(hour) + ":" + std::to_string(minute);
-  const std::string bac = std::to_string(state_.player.drunkenness());
-
   text_.draw(graphics, time, 0, 0);
+
+#ifndef NDEBUG
+  const std::string bac = std::to_string(state_.player.drunkenness());
   text_.draw(graphics, bac, 256, 0, Text::Alignment::Right);
+#endif
+
+  const auto p = state_.player.get_position();
+  const Map::Building& b = state_.map.building_near(p.first, p.second);
+  if (b.width > 0) {
+    // TODO show name instead of generic text
+    const int ty = state_.player.get_position().second > 120 ? 16 : 208;
+    text_.draw(graphics, b.name(), 128, ty, Text::Alignment::Center);
+  }
 }
 
 Screen* MapScreen::next_screen() const {

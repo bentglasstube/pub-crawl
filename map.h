@@ -9,8 +9,6 @@
 class Map {
   public:
 
-    enum class CellType { Street, Block, Building };
-
     struct Building {
       enum class Type { None, House, Pub };
 
@@ -19,8 +17,8 @@ class Map {
 
       Building(int x, int y, int w, int h, Type type);
       void draw(Graphics& graphics) const;
-
-      bool contains(int x, int y) const;
+      bool near(int x, int y) const;
+      std::string name() const;
 
       static int building_color(Type type);
     };
@@ -31,7 +29,7 @@ class Map {
     void draw(Graphics& graphics) const;
 
     std::pair<int, int> start_position() const;
-    CellType cell_type(int x, int y) const;
+    const Building& building_near(int x, int y) const;
     bool walkable(int x, int y) const;
     unsigned int seed() const;
 
@@ -55,7 +53,7 @@ class Map {
 
         Building add_building(Building::Type type, std::default_random_engine& r);
 
-        CellType cell_type(int x, int y) const;
+        bool walkable(int x, int y) const;
 
       private:
 

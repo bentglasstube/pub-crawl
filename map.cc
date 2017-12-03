@@ -32,10 +32,10 @@ std::pair<int, int> Map::start_position() const {
       const int ym = b.y + b.height / 2;
       const int yb = b.y + b.height;
 
-      if (cell_type(xl, ym) == CellType::Street) return std::make_pair(xl, ym);
-      if (cell_type(xr, ym) == CellType::Street) return std::make_pair(xr, ym);
-      if (cell_type(xm, yt) == CellType::Street) return std::make_pair(xm, yt);
-      if (cell_type(xm, yb) == CellType::Street) return std::make_pair(xm, yb);
+      if (walkable(xl, ym)) return std::make_pair(xl, ym);
+      if (walkable(xr, ym)) return std::make_pair(xr, ym);
+      if (walkable(xm, yt)) return std::make_pair(xm, yt);
+      if (walkable(xm, yb)) return std::make_pair(xm, yb);
 
       return std::make_pair(xm, ym);
     }
@@ -44,20 +44,17 @@ std::pair<int, int> Map::start_position() const {
   return std::make_pair(0, 0);
 }
 
-Map::CellType Map::cell_type(int x, int y) const {
-  if (x < 0 || x >= kWidth) return CellType::Block;
-  if (y < 0 || y >= kHeight) return CellType::Block;
-
+const Map::Building& Map::building_near(int x, int y) const {
   for (const auto& b : buildings_) {
-    if (b.contains(x, y)) return CellType::Building;
+    if (b.near(x, y)) return b;
   }
-
-  return root_->cell_type(x, y);
+  return kNullBuilding;
 }
 
 bool Map::walkable(int x, int y) const {
-  const auto c = cell_type(x, y);
-  return c != CellType::Block;
+  if (x < 0 || x >= kWidth) return false;
+  if (y < 0 || y >= kHeight) return false;
+  return root_->walkable(x, y);
 }
 
 unsigned int Map::seed() const {
@@ -72,20 +69,29 @@ void Map::Building::draw(Graphics& graphics) const {
   graphics.draw_rect(&r, building_color(type), true);
 }
 
-bool Map::Building::contains(int px, int py) const {
-  if (px < x || px >= x + width) return false;
-  if (py < y || py >= y + height) return false;
+bool Map::Building::near(int px, int py) const {
+  if (px < x - 1 || px > x + width) return false;
+  if (py < y - 1 || py > y + height) return false;
   return true;
+}
+
+std::string Map::Building::name() const {
+  switch (type) {
+    case Type::Pub:
+      return "Pub";
+    case Type::House:
+      return "Home";
+    default:
+      return "";
+  }
 }
 
 int Map::Building::building_color(Type type) {
   switch (type) {
     case Type::Pub:
       return 0xebd320ff;
-
     case Type::House:
       return 0xdb41c3ff;
-
     default:
       return 0xaaaaaaff;
   }
@@ -191,17 +197,12 @@ Map::Building Map::Block::add_building(Building::Type type, std::default_random_
   }
 }
 
-Map::CellType Map::Block::cell_type(int x, int y) const {
-  if (x < x_ || x >= x_ + width_) return CellType::Street;
-  if (y < y_ || y >= y_ + height_) return CellType::Street;
+bool Map::Block::walkable(int x, int y) const {
+  if (x < x_ || x >= x_ + width_) return true;
+  if (y < y_ || y >= y_ + height_) return true;
 
-  if (leaf()) {
-    return CellType::Block;
-  } else {
-    // TODO optimize if needed since these are sorted
-    const auto c = left_->cell_type(x, y);
-    return c == CellType::Street ? right_->cell_type(x, y) : c;
-  }
+  if (leaf()) return false;
+  return left_->walkable(x, y) && right_->walkable(x, y);
 }
 
 bool Map::Block::leaf() const {

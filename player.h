@@ -17,6 +17,7 @@ class Player {
     void move(Direction dir);
     void stop();
 
+    std::pair<int, int> get_position() const;
     void set_position(int x, int y);
 
     double drunkenness() const;

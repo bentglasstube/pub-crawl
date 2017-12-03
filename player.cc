@@ -65,6 +65,10 @@ void Player::stop() {
   vy_ = 0;
 }
 
+std::pair<int, int> Player::get_position() const {
+  return std::make_pair((int) x_, (int) y_);
+}
+
 void Player::set_position(int x, int y) {
   x_ = x;
   y_ = y;

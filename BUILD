@@ -67,6 +67,17 @@ cc_library(
 )
 
 cc_library(
+    name = "message_box",
+    srcs = [ "message_box.cc" ],
+    hdrs = [ "message_box.h" ],
+    deps = [
+        "@libgam//:graphics",
+        "@libgam//:spritemap",
+        "@libgam//:text",
+    ],
+)
+
+cc_library(
     name = "player",
     srcs = [ "player.cc" ],
     hdrs = [ "player.h" ],
@@ -95,6 +106,7 @@ cc_library(
         "@libgam//:text",
         "@libgam//:util",
         "map",
+        "message_box",
         "game_state",
     ],
 )

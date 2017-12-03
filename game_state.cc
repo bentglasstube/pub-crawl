@@ -27,3 +27,7 @@ void GameState::draw(Graphics& graphics) const {
   wallet << "$" << std::setw(4) << player.money();
   text_.draw(graphics, wallet.str(), 0, 16, Text::Alignment::Left);
 }
+
+bool GameState::bars_closed() const {
+  return time >= kClosingTime;
+}

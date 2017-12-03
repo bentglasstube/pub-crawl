@@ -29,7 +29,7 @@ bool BarScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
       } else {
         if (input.key_pressed(Input::Button::A) || input.key_pressed(Input::Button::B)) {
           if (phase_ == Phase::Paying) return false;
-          set_phase(Phase::Greeting);
+          set_phase(state_.bars_closed() ? Phase::Paying : Phase::Greeting);
         }
       }
     } else {
@@ -103,10 +103,16 @@ void BarScreen::set_phase(Phase phase) {
 
   switch (phase_) {
     case Phase::Greeting:
-      msg_.reset(new MessageBox(30, 5, "Welcome to " + pub_.name + ".\nHow can I help you?"));
-      msg_->add_option("Beer Info");
-      msg_->add_option("I'm ready to order");
-      msg_->add_option("I'm ready to go");
+      if (state_.bars_closed()) {
+        msg_.reset(new MessageBox(30, 5, "I'm sorry but we are closing."));
+      } else {
+        msg_.reset(new MessageBox(30, 5, "Welcome to " + pub_.name + ".\nHow can I help you?"));
+
+        msg_->add_option("Beer Info");
+        msg_->add_option("I'm ready to order");
+        msg_->add_option("I'm ready to go");
+      }
+
       break;
 
     case Phase::BeerMenu:
@@ -135,7 +141,6 @@ void BarScreen::set_phase(Phase phase) {
       state_.player.drink(beer_->abv, beer_->pour_size);
       tab_ += beer_->price;
       // TODO handle getting too drunk
-      // TODO handle closing time
       break;
 
     case Phase::Paying:

@@ -1,6 +1,6 @@
 #include "building.h"
 
-const std::vector<std::string> Beer::kNames = { "Dirt Water", "Ex-Wife", "DFTG", "Gruber", "Choke", "Karate", "Buzz", "Larry", "Yeancy", "Rez", "Arma", "Kababesh" };
+const std::vector<std::string> Beer::kNames = { "Dirt Water", "Ex-Wife", "DFTG", "Gruber", "Choke", "Karate", "Buzz", "Larry", "Yeancy", "Rez", "Arma", "Kababesh", "Digshake", "CF" };
 const std::vector<std::string> Beer::kStyles = { "IPA", "Red", "Porter", "Stout", "Pale", "Lager", "Pils", "Brown" };
 
 Beer Beer::generate(std::default_random_engine& r) {

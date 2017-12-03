@@ -8,6 +8,7 @@
 #include "text.h"
 
 #include "game_state.h"
+#include "message_box.h"
 
 class BarScreen : public Screen {
   public:
@@ -22,8 +23,18 @@ class BarScreen : public Screen {
 
   private:
 
+    enum class Phase { Greeting, BeerMenu, BeerInfo, Ordering, Drinking, Paying };
+
     GameState state_;
     const Building& pub_;
     Backdrop backdrop_;
     Text text_;
+    std::unique_ptr<MessageBox> msg_;
+    Phase phase_;
+    const Beer* beer_;
+    int timer_, tab_;
+
+    std::string format_beer_info(const Beer* beer);
+    void handle_menu_choice();
+    void set_phase(Phase phase_);
 };

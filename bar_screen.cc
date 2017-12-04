@@ -75,7 +75,8 @@ Screen* BarScreen::next_screen() const {
 }
 
 std::string BarScreen::get_music_track() const {
-  return "";
+  int id = state_.time % 3;
+  return "bar" + std::to_string(id + 1) + ".ogg";
 }
 
 std::string BarScreen::format_beer_info(const Beer* beer) {

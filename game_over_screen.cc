@@ -29,5 +29,5 @@ Screen* GameOverScreen::next_screen() const {
 }
 
 std::string GameOverScreen::get_music_track() const {
-  return "";
+  return "gameover.ogg";
 }

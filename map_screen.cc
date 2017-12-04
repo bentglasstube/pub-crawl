@@ -88,5 +88,5 @@ Screen* MapScreen::next_screen() const {
 }
 
 std::string MapScreen::get_music_track() const {
-  return "";
+  return "walking.ogg";
 }

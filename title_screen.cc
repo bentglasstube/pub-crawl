@@ -24,5 +24,5 @@ Screen* TitleScreen::next_screen() const {
 }
 
 std::string TitleScreen::get_music_track() const {
-  return "";
+  return "title.ogg";
 }

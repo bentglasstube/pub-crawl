@@ -17,13 +17,13 @@ void HomeScreen::draw(Graphics& graphics) const {
   // TODO fix assumption about number of pubs and beers
   const int pubs = state_.pubs.size();
   const int beers = state_.beers.size();
-  const double percent = pubs * beers / 70.0;
+  const int percent = pubs * beers * 100 / 70;
 
   std::stringstream score;
 
   score << "Pubs visited:" << std::setw(5) << pubs << "\n";
   score << "Beers tried: " << std::setw(5) << beers << "\n";
-  score << "Total score: " << std::setw(4) << std::setprecision(2) << (100 * percent) << "%";
+  score << "Total score: " << std::setw(4) << percent << "%";
 
   text_.draw(graphics, score.str(), 112, 128, Text::Alignment::Left);
 }
@@ -33,5 +33,5 @@ Screen* HomeScreen::next_screen() const {
 }
 
 std::string HomeScreen::get_music_track() const {
-  return "";
+  return "lullaby.ogg";
 }

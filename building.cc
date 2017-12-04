@@ -21,13 +21,12 @@ Beer Beer::generate(std::default_random_engine& r) {
 
   std::uniform_int_distribution<int> price_picker(5, 12);
   beer.price = price_picker(r);
-  beer.tried = false;
 
   return beer;
 }
 
 Building::Building(int x, int y, int w, int h, Type type, const std::string& name) :
-  x(x), y(y), width(w), height(h), type(type), name(name), taps(), visited(false) {}
+  x(x), y(y), width(w), height(h), type(type), name(name), taps() {}
 
 void Building::draw(Graphics& graphics) const {
   SDL_Rect r = { x, y, width, height };

@@ -14,10 +14,9 @@ bool HomeScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
 void HomeScreen::draw(Graphics& graphics) const {
   backdrop_.draw(graphics);
 
-  const int pubs = state_.map.pubs_visited();
-  const int beers = state_.map.beers_drank();
-
-  // TODO constants!
+  // TODO fix assumption about number of pubs and beers
+  const int pubs = state_.pubs.size();
+  const int beers = state_.beers.size();
   const double percent = pubs * beers / 70.0;
 
   std::stringstream score;

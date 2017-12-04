@@ -82,6 +82,10 @@ int Player::money() const {
   return money_;
 }
 
+bool Player::barfing() const {
+  return drunk_ > kMaxBAC;
+}
+
 void Player::drink(double abv, double volume) {
   // TODO model absorption rates
   // TODO allow player weight

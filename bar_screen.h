@@ -23,7 +23,7 @@ class BarScreen : public Screen {
 
   private:
 
-    enum class Phase { Greeting, BeerMenu, BeerInfo, Ordering, Drinking, Paying };
+    enum class Phase { Greeting, BeerMenu, BeerInfo, Ordering, Drinking, Paying, Drunk, Dishes };
 
     GameState state_;
     const Building& pub_;

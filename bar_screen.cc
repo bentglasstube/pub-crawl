@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <sstream>
 
+#include "game_over_screen.h"
 #include "map_screen.h"
 
 BarScreen::BarScreen(GameState state, const Building& pub) :
@@ -11,6 +12,7 @@ BarScreen::BarScreen(GameState state, const Building& pub) :
   phase_(Phase::Greeting), tab_(0)
 {
   set_phase(Phase::Greeting);
+  state_.pubs.insert(pub_.name);
 }
 
 bool BarScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
@@ -28,7 +30,17 @@ bool BarScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
         }
       } else {
         if (input.key_pressed(Input::Button::A) || input.key_pressed(Input::Button::B)) {
-          if (phase_ == Phase::Paying) return false;
+          switch (phase_) {
+            case Phase::Paying:
+            case Phase::Drunk:
+            case Phase::Dishes:
+              return false;
+
+            // do nothing
+            default:
+              break;
+          }
+
           set_phase(state_.bars_closed() ? Phase::Paying : Phase::Greeting);
         }
       }
@@ -52,7 +64,14 @@ void BarScreen::draw(Graphics& graphics) const {
 }
 
 Screen* BarScreen::next_screen() const {
-  return new MapScreen(state_);
+  switch (phase_) {
+    case Phase::Drunk:
+    case Phase::Dishes:
+      return new GameOverScreen(state_);
+
+    default:
+      return new MapScreen(state_);
+  }
 }
 
 std::string BarScreen::get_music_track() const {
@@ -97,9 +116,11 @@ void BarScreen::handle_menu_choice() {
 }
 
 void BarScreen::set_phase(Phase phase) {
-  phase_ = phase;
-
-  std::stringstream message;
+  if (state_.player.barfing()) {
+    phase_ = Phase::Drunk;
+  } else {
+    phase_ = phase;
+  }
 
   switch (phase_) {
     case Phase::Greeting:
@@ -139,22 +160,34 @@ void BarScreen::set_phase(Phase phase) {
       msg_.reset(new MessageBox(30, 5, "One " + beer_->name + ".\nComing right up!"));
       state_.update(30000);
       state_.player.drink(beer_->abv, beer_->pour_size);
+      state_.beers.insert(beer_->name);
       tab_ += beer_->price;
-      // TODO handle getting too drunk
+
       break;
 
     case Phase::Paying:
-      std::string message = "";
       if (tab_ > 0) {
-        message = "That'll be $" + std::to_string(tab_) + ".";
+        std::string message = "That'll be $" + std::to_string(tab_) + ", please.\n\n";
+
+        if (state_.player.money() > tab_) {
+          state_.player.spend(tab_);
+        } else {
+          message += "...you don't have enough cash?\nLooks like you're doing dishes.";
+          phase_ = Phase::Dishes;
+        }
+
+        msg_.reset(new MessageBox(30, 5, message));
       } else {
-        message = "Come again soon!";
+        msg_.reset(new MessageBox(30, 5, "Come again soon!"));
       }
-      msg_.reset(new MessageBox(30, 5, message));
+      break;
 
-      state_.player.spend(tab_);
-      // TODO handle running out of money
+    case Phase::Drunk:
+      msg_.reset(new MessageBox(30, 5, "Hey, are you doing okay?"));
+      break;
 
+    case Phase::Dishes:
+      msg_.reset();
       break;
   }
 }

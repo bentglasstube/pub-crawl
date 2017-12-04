@@ -22,6 +22,7 @@ class Player {
 
     double drunkenness() const;
     int money() const;
+    bool barfing() const;
 
     void drink(double abv, double volume);
     void spend(int amount);
@@ -33,6 +34,7 @@ class Player {
     static constexpr double kPlayerWeight = 180;
     static constexpr double kMaleRate = 0.73;
     static constexpr double kFemaleRate = 0.66;
+    static constexpr double kMaxBAC = 0.25;
 
     double x_, y_, vx_, vy_;
     double drunk_;

@@ -10,7 +10,6 @@ struct Beer {
   std::string name;
   double abv;
   int pour_size, price;
-  bool tried;
 
   static Beer generate(std::default_random_engine& r);
 
@@ -27,7 +26,6 @@ class Building {
     Type type;
     std::string name;
     std::vector<Beer*> taps;
-    bool visited;
 
     Building(int x, int y, int w, int h, Type type, const std::string& name);
 

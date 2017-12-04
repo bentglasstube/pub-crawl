@@ -104,12 +104,14 @@ cc_library(
     name = "screens",
     srcs = [
         "bar_screen.cc",
+        "game_over_screen.cc",
         "home_screen.cc",
         "map_screen.cc",
         "title_screen.cc",
     ],
     hdrs = [
         "bar_screen.h",
+        "game_over_screen.h",
         "home_screen.h",
         "map_screen.h",
         "title_screen.h",

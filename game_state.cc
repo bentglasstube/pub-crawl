@@ -26,6 +26,12 @@ void GameState::draw(Graphics& graphics) const {
   std::stringstream wallet;
   wallet << "$" << std::setw(4) << player.money();
   text_.draw(graphics, wallet.str(), 0, 16, Text::Alignment::Left);
+
+#ifndef NDEBUG
+  std::stringstream bac;
+  bac << std::setprecision(3) << player.drunkenness();
+  text_.draw(graphics, bac.str(), 0, 32, Text::Alignment::Left);
+#endif
 }
 
 bool GameState::bars_closed() const {

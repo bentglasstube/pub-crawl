@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <unordered_set>
+
 #include "graphics.h"
 #include "text.h"
 
@@ -13,6 +16,7 @@ class GameState {
     unsigned int time;
     Player player;
     Map map;
+    std::unordered_set<std::string> beers, pubs;
 
     void update(unsigned int elapsed);
     void draw(Graphics& graphics) const;

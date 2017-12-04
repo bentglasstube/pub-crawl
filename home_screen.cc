@@ -21,9 +21,9 @@ void HomeScreen::draw(Graphics& graphics) const {
 
   std::stringstream score;
 
-  score << "Pubs visited:" << std::setw(4) << pubs << " /  7\n";
-  score << "Beers tried: " << std::setw(4) << beers << " / 10\n";
-  score << "Total score: " << std::setw(8) << std::setprecision(3) << (100 * percent) << "%";
+  score << "Pubs visited:" << std::setw(5) << pubs << "\n";
+  score << "Beers tried: " << std::setw(5) << beers << "\n";
+  score << "Total score: " << std::setw(4) << std::setprecision(2) << (100 * percent) << "%";
 
   text_.draw(graphics, score.str(), 112, 128, Text::Alignment::Left);
 }

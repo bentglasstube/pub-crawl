@@ -158,7 +158,7 @@ void BarScreen::set_phase(Phase phase) {
 
     case Phase::Drinking:
       msg_.reset(new MessageBox(30, 5, "One " + beer_->name + ".\nComing right up!"));
-      state_.update(30000);
+      state_.update(20000);
       state_.player.drink(beer_->abv, beer_->pour_size);
       state_.beers.insert(beer_->name);
       tab_ += beer_->price;

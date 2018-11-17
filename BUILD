@@ -11,7 +11,7 @@ config_setting(
 )
 
 cc_binary(
-    name = "ld40",
+    name = "pub-crawl",
     data = ["//content"],
     linkopts = select({
         ":windows": ["-mwindows", "-lSDL2main" ],
@@ -31,18 +31,18 @@ cc_binary(
 )
 
 pkg_winzip(
-    name = "ld40-windows",
+    name = "pub-crawl-windows",
     files = [
-        ":ld40",
+        ":pub-crawl",
         "//content",
     ]
 )
 
 pkg_tar(
-    name = "ld40-linux",
-    extension = "tgz",
+    name = "pub-crawl-linux",
+    extension = "tar.gz",
     srcs = [
-        ":ld40",
+        ":pub-crawl",
         "//content",
     ],
 )

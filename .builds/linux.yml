@@ -1,0 +1,24 @@
+image: archlinux
+packages:
+  - bazel
+  - python
+  - rsync
+  - sdl2
+  - sdl2_image
+  - sdl2_mixer
+sources:
+  - https://git.sr.ht/~bentglasstube/pub-crawl
+environment:
+  target: 'pub-crawl-linux'
+  deploy: 'build@build.eatabrick.org:pub-crawl'
+secrets:
+  - 7a7c0309-95bb-4107-9e42-96352295d661
+tasks:
+  - build: |
+      cd pub-crawl
+      bazel build -c opt :"$target"
+  - deploy: |
+      cd pub-crawl
+      version=$(git describe --tags)
+      sshopts="ssh -o StrictHostKeyChecking=no"
+      rsync --rsh="$sshopts" -rP bazel-bin/"$target".tar.gz "$deploy"/"$target"-"$version".tgz

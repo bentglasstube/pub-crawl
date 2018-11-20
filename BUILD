@@ -41,6 +41,8 @@ pkg_winzip(
 pkg_tar(
     name = "pub-crawl-linux",
     extension = "tar.gz",
+    strip_prefix = "/",
+    package_dir = "pub-crawl/",
     srcs = [
         ":pub-crawl",
         "//content",

@@ -8,12 +8,7 @@
 HomeScreen::HomeScreen(GameState state) : backdrop_("bedroom.png"), text_("text.png"), state_(std::move(state)) {}
 
 bool HomeScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
-  if (!audio.music_playing()) audio.play_music("lullaby.ogg");
-  if (input.any_pressed()) {
-    audio.stop_music();
-    return false;
-  }
-  return true;
+  return !input.any_pressed();
 }
 
 void HomeScreen::draw(Graphics& graphics) const {
@@ -35,4 +30,8 @@ void HomeScreen::draw(Graphics& graphics) const {
 
 Screen* HomeScreen::next_screen() const {
   return new TitleScreen();
+}
+
+std::string HomeScreen::get_music_track() const {
+  return "lullaby.ogg";
 }

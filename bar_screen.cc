@@ -16,10 +16,6 @@ BarScreen::BarScreen(GameState state, const Building& pub) :
 }
 
 bool BarScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
-  if (!audio.music_playing()) {
-    audio.play_music("bar" + std::to_string((state_.time % 3) + 1) + ".ogg");
-  }
-
   if (msg_) {
     msg_->update(elapsed);
 
@@ -38,7 +34,6 @@ bool BarScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
             case Phase::Paying:
             case Phase::Drunk:
             case Phase::Dishes:
-              audio.stop_music();
               return false;
 
             // do nothing
@@ -77,6 +72,11 @@ Screen* BarScreen::next_screen() const {
     default:
       return new MapScreen(state_);
   }
+}
+
+std::string BarScreen::get_music_track() const {
+  int id = state_.time % 3;
+  return "bar" + std::to_string(id + 1) + ".ogg";
 }
 
 std::string BarScreen::format_beer_info(const Beer* beer) {

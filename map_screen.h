@@ -21,6 +21,7 @@ class MapScreen : public Screen {
     void draw(Graphics& graphics) const override;
 
     Screen* next_screen() const override;
+    std::string get_music_track() const override;
 
   private:
 

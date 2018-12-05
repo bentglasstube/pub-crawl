@@ -9,7 +9,8 @@
 BarScreen::BarScreen(GameState state, const Building& pub) :
   state_(state), pub_(pub),
   backdrop_("bar.png"), text_("text.png"), msg_(),
-  phase_(Phase::Greeting), tab_(0)
+  phase_(Phase::Greeting), tab_(0),
+  music_track_("bar" + std::to_string((state_.time % 3) + 1) + ".ogg")
 {
   set_phase(Phase::Greeting);
   state_.pubs.insert(pub_.name);
@@ -75,8 +76,7 @@ Screen* BarScreen::next_screen() const {
 }
 
 std::string BarScreen::get_music_track() const {
-  int id = state_.time % 3;
-  return "bar" + std::to_string(id + 1) + ".ogg";
+  return music_track_;
 }
 
 std::string BarScreen::format_beer_info(const Beer* beer) {

@@ -33,6 +33,7 @@ class BarScreen : public Screen {
     Phase phase_;
     const Beer* beer_;
     int tab_;
+    std::string music_track_;
 
     std::string format_beer_info(const Beer* beer);
     void handle_menu_choice();

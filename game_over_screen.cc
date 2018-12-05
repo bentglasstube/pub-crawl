@@ -7,7 +7,14 @@ GameOverScreen::GameOverScreen(GameState state) :
   text_("text.png"), state_(state) {}
 
 bool GameOverScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
-  return !input.any_pressed();
+  if (!audio.music_playing()) audio.play_music("gameover.ogg");
+
+  if (input.any_pressed()) {
+    audio.stop_music();
+    return false;
+  }
+
+  return true;
 }
 
 void GameOverScreen::draw(Graphics& graphics) const {
@@ -26,8 +33,4 @@ void GameOverScreen::draw(Graphics& graphics) const {
 
 Screen* GameOverScreen::next_screen() const {
   return new TitleScreen();
-}
-
-std::string GameOverScreen::get_music_track() const {
-  return "gameover.ogg";
 }

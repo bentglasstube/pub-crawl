@@ -8,6 +8,7 @@ int main(int, char**) {
   config.graphics.title = "ld40";
   config.graphics.width = 256;
   config.graphics.height = 240;
+  config.graphics.scale = 3;
   config.graphics.fullscreen = true;
 
   Game game(config);

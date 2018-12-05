@@ -7,9 +7,14 @@
 
 TitleScreen::TitleScreen() : backdrop_("title.png"), text_("text.png"), timer_(0) {}
 
-bool TitleScreen::update(const Input& input, Audio&, unsigned int elapsed) {
+bool TitleScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+  if (!audio.music_playing()) audio.play_music("title.ogg");
   timer_ = (timer_ + elapsed) % 1000;
-  return !input.any_pressed();
+  if (input.any_pressed()) {
+    audio.stop_music();
+    return false;
+  }
+  return true;
 }
 
 void TitleScreen::draw(Graphics& graphics) const {
@@ -21,8 +26,4 @@ void TitleScreen::draw(Graphics& graphics) const {
 Screen* TitleScreen::next_screen() const {
   GameState state(Util::random_seed());
   return new MapScreen(state);
-}
-
-std::string TitleScreen::get_music_track() const {
-  return "title.ogg";
 }

@@ -6,6 +6,8 @@
 MapScreen::MapScreen(GameState state) : state_(state), text_("text.png"), msg_() {}
 
 bool MapScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+  if (!audio.music_playing()) audio.play_music("walking.ogg");
+
   if (msg_) {
     msg_->update(elapsed);
 
@@ -35,11 +37,13 @@ bool MapScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
         if (state_.bars_closed()) {
           msg_.reset(new MessageBox(30, 1, "Looks like they're closed."));
         } else {
+          audio.stop_music();
           return false;
         }
       }
       if (b.type == Building::Type::House) {
         if (state_.past_bedtime()) {
+          audio.stop_music();
           return false;
         } else {
           msg_.reset(new MessageBox(30, 1, "You aren't ready for bed yet."));
@@ -85,8 +89,4 @@ Screen* MapScreen::next_screen() const {
   }
 
   return nullptr;
-}
-
-std::string MapScreen::get_music_track() const {
-  return "walking.ogg";
 }

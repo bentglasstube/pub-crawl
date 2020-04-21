@@ -2,8 +2,8 @@
 
 Type=Application
 Version=1.0
-Name=Algernon
+Name=Pub Crawl
 Terminal=false
 Icon=icon
-Exec=algernon
+Exec=pub-crawl
 Categories=Game;

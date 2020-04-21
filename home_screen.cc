@@ -7,7 +7,7 @@
 
 HomeScreen::HomeScreen(GameState state) : backdrop_("bedroom.png"), text_("text.png"), state_(std::move(state)) {}
 
-bool HomeScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+bool HomeScreen::update(const Input& input, Audio&, unsigned int) {
   return !input.any_pressed();
 }
 

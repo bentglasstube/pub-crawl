@@ -5,7 +5,7 @@
 
 MapScreen::MapScreen(GameState state) : state_(state), text_("text.png"), msg_() {}
 
-bool MapScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+bool MapScreen::update(const Input& input, Audio&, unsigned int elapsed) {
   if (msg_) {
     msg_->update(elapsed);
 

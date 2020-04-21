@@ -16,7 +16,7 @@ BarScreen::BarScreen(GameState state, const Building& pub) :
   state_.pubs.insert(pub_.name);
 }
 
-bool BarScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+bool BarScreen::update(const Input& input, Audio&, unsigned int elapsed) {
   if (msg_) {
     msg_->update(elapsed);
 

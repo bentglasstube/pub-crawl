@@ -1,5 +1,12 @@
 bazel-*
-build/
-ld40-*.zip
-ld40-*.tgz
-*.app
+/*.zip
+/*.tgz
+/*.app
+/*.AppImage
+/*.AppDir
+/*.data
+/*.html
+/*.js
+/*.wasm
+/*-web-*/
+*output/

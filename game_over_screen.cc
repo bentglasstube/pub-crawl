@@ -6,7 +6,7 @@ GameOverScreen::GameOverScreen(GameState state) :
   bathroom_("bathroom.png"), kitchen_("dishes.png"),
   text_("text.png"), state_(state) {}
 
-bool GameOverScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+bool GameOverScreen::update(const Input& input, Audio&, unsigned int) {
   return !input.any_pressed();
 }
 

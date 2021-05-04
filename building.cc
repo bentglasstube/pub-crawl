@@ -47,8 +47,8 @@ bool Building::near(int px, int py) const {
   return true;
 }
 
-void Building::add_tap(Beer& beer) {
-  taps.push_back(&beer);
+void Building::add_tap(const Beer& beer) {
+  taps.push_back(beer);
 }
 
 int Building::building_color(Type type) {

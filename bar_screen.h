@@ -31,11 +31,11 @@ class BarScreen : public Screen {
     Text text_;
     std::unique_ptr<MessageBox> msg_;
     Phase phase_;
-    const Beer* beer_;
+    Beer beer_;
     int tab_;
     std::string music_track_;
 
-    std::string format_beer_info(const Beer* beer);
+    std::string format_beer_info(const Beer& beer);
     void handle_menu_choice();
     void set_phase(Phase phase_);
 };

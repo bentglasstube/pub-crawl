@@ -25,14 +25,14 @@ class Building {
     int x, y, width, height;
     Type type;
     std::string name;
-    std::vector<Beer*> taps;
+    std::vector<Beer> taps;
 
     Building(int x, int y, int w, int h, Type type, const std::string& name);
 
     void draw(Graphics& graphics) const;
     bool near(int x, int y) const;
 
-    void add_tap(Beer& beer);
+    void add_tap(const Beer& beer);
 
     static int building_color(Type type);
     static Building generate_pub(int x, int y, int w, int h, std::default_random_engine& r);

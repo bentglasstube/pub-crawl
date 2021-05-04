@@ -60,7 +60,7 @@ void BarScreen::draw(Graphics& graphics) const {
   if (msg_) msg_->draw(graphics);
 
   for (int i = 0; i < 3; ++i) {
-    text_.draw(graphics, pub_.taps[i]->name, 104, 20 + 14 * i);
+    text_.draw(graphics, pub_.taps[i].name, 104, 20 + 14 * i);
   }
 }
 
@@ -79,13 +79,13 @@ std::string BarScreen::get_music_track() const {
   return music_track_;
 }
 
-std::string BarScreen::format_beer_info(const Beer* beer) {
+std::string BarScreen::format_beer_info(const Beer& beer) {
   std::stringstream info;
 
-  info << std::left << std::setw(20) << beer->name;
-  info << std::right << std::setw(10) << ("$" + std::to_string(beer->price)) << "\n";
-  info << std::setw(3) << std::setprecision(2) << (100 * beer->abv) << "% ABV";
-  info << std::right << std::setw(22) << (beer->pour_size == 16 ? "Pint" : "Goblet") << "\n";
+  info << std::left << std::setw(20) << beer.name;
+  info << std::right << std::setw(10) << ("$" + std::to_string(beer.price)) << "\n";
+  info << std::setw(3) << std::setprecision(2) << (100 * beer.abv) << "% ABV";
+  info << std::right << std::setw(22) << (beer.pour_size == 16 ? "Pint" : "Goblet") << "\n";
 
   return info.str();
 }
@@ -140,7 +140,7 @@ void BarScreen::set_phase(Phase phase) {
     case Phase::BeerMenu:
       msg_.reset(new MessageBox(30, 5, "Which beer do you want to know\nmore about?"));
       for (const auto beer : pub_.taps) {
-        msg_->add_option(beer->name);
+        msg_->add_option(beer.name);
       }
       break;
 
@@ -153,16 +153,16 @@ void BarScreen::set_phase(Phase phase) {
     case Phase::Ordering:
       msg_.reset(new MessageBox(30, 5, "What can I get for you?"));
       for (const auto beer : pub_.taps) {
-        msg_->add_option(beer->name);
+        msg_->add_option(beer.name);
       }
       break;
 
     case Phase::Drinking:
-      msg_.reset(new MessageBox(30, 5, "One " + beer_->name + ".\nComing right up!"));
+      msg_.reset(new MessageBox(30, 5, "One " + beer_.name + ".\nComing right up!"));
       state_.update(20000);
-      state_.player.drink(beer_->abv, beer_->pour_size);
-      state_.beers.insert(beer_->name);
-      tab_ += beer_->price;
+      state_.player.drink(beer_.abv, beer_.pour_size);
+      state_.beers.insert(beer_.name);
+      tab_ += beer_.price;
 
       break;
 

@@ -1,28 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-local_repository(
-    name = "libgam",
-    path = "../gam",
-)
-
-# git_repository(
-#     name = "libgam",
-#     remote = "https://git.sr.ht/~bentglasstube/gam",
-#     tag = "v1.8"
-# )
-
 git_repository(
-    name = "mxebzl",
-    remote = "https://github.com/cfrantz/mxebzl.git",
-    tag = "20170703_RC03",
-)
-
-load("@mxebzl//tools:repository.bzl", "mxe_compilers")
-mxe_compilers(
-    deps = [
-        "compiler",
-        "SDL2",
-        "SDL2-extras",
-        "xz",
-    ],
+    name = "libgam",
+    remote = "https://git.sr.ht/~bentglasstube/gam",
+    commit = "fad449e47eac614b8528bb157642e5d0a35caa16",
 )

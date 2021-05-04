@@ -1,22 +1,11 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
-load("@mxebzl//tools/windows:rules.bzl", "pkg_winzip")
-
-config_setting(
-    name = "windows",
-    values = {
-        "crosstool_top": "@mxebzl//tools/windows:toolchain",
-    }
-)
 
 cc_binary(
     name = "pub-crawl",
     data = ["//content"],
-    linkopts = select({
-        ":windows": ["-mwindows", "-lSDL2main" ],
-        "//conditions:default": [],
-    }) + [
+    linkopts = [
         "-lSDL2",
         "-lSDL2_image",
         "-lSDL2_mixer",
@@ -27,25 +16,6 @@ cc_binary(
     deps = [
         "@libgam//:game",
         ":screens",
-    ],
-)
-
-pkg_winzip(
-    name = "pub-crawl-windows",
-    files = [
-        ":pub-crawl",
-        "//content",
-    ]
-)
-
-pkg_tar(
-    name = "pub-crawl-linux",
-    extension = "tar.gz",
-    strip_prefix = "/",
-    package_dir = "pub-crawl/",
-    srcs = [
-        ":pub-crawl",
-        "//content",
     ],
 )
 

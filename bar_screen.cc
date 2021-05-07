@@ -139,7 +139,7 @@ void BarScreen::set_phase(Phase phase) {
 
     case Phase::BeerMenu:
       msg_.reset(new MessageBox(30, 5, "Which beer do you want to know\nmore about?"));
-      for (const auto beer : pub_.taps) {
+      for (const Beer& beer : pub_.taps) {
         msg_->add_option(beer.name);
       }
       break;
@@ -152,7 +152,7 @@ void BarScreen::set_phase(Phase phase) {
 
     case Phase::Ordering:
       msg_.reset(new MessageBox(30, 5, "What can I get for you?"));
-      for (const auto beer : pub_.taps) {
+      for (const Beer& beer : pub_.taps) {
         msg_->add_option(beer.name);
       }
       break;

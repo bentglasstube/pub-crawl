@@ -14,7 +14,7 @@ CC=$(CROSS)g++
 LD=$(CROSS)ld
 AR=$(CROSS)ar
 PKG_CONFIG=$(CROSS)pkg-config
-CFLAGS=-O3 --std=c++14 -Wall -Wextra -Werror -pedantic -I gam -DNDEBUG
+CFLAGS=-O3 --std=c++14 -Wall -Wextra -pedantic -I gam -DNDEBUG
 EMFLAGS=-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_OGG=1 -s USE_VORBIS=1
 
 EXECUTABLE=$(BUILDDIR)/$(NAME)

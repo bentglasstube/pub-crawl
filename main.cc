@@ -13,7 +13,7 @@ void step(void* game) {
 int main(int, char**) {
   Game::Config config;
 
-  config.graphics.title = "LD46";
+  config.graphics.title = "Pub Crawl";
   config.graphics.width = 256;
   config.graphics.height = 240;
   config.graphics.scale = 3;
